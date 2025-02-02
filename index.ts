@@ -41,20 +41,14 @@ server.tool("search",
 		query: z.string().describe("search query"),
 		offset: z.number().describe("pagination offset").default(0),
 		limit: z.number().describe("max pagination limit").default(25),
-		documentId: z.string().describe("parent document id").default(""),
-		statusFilter: z.enum(["", "archived", "draft", "published"]).describe("document status filter").default(""),
-		dateFilter: z.enum(["", "day", "week", "month", "year"]).describe("document date filter").default(""),
 	},
-	async ({ query, offset, limit, documentId, statusFilter, dateFilter }) => {
+	async ({ query, offset, limit }) => {
 		const {data} = await serverFetch('/api/documents.search', {
 			method: 'POST',
 			body: {
 				offset,
 				limit,
 				query,
-				statusFilter: statusFilter !== "" ? statusFilter : undefined,
-				dateFilter: dateFilter !== "" ? dateFilter : undefined,
-				documentId: documentId !== "" ? documentId : undefined,
 			},
 		})
 		return {
