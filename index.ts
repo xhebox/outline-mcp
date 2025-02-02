@@ -41,14 +41,20 @@ server.tool("search",
 		query: z.string().describe("search query"),
 		offset: z.number().describe("pagination offset").default(1),
 		limit: z.number().describe("max pagination limit").default(10),
+		documentId: z.string().describe("parent document id"),
+		statusFilter: z.enum(["archived", "draft", "published"]).describe("document status filter"),
+		dateFilter: z.enum(["day", "week", "month", "year"]).describe("document date filter"),
 	},
-	async ({ query, offset, limit }) => {
+	async ({ query, offset, limit, documentId, statusFilter, dateFilter }) => {
 		const {data} = await serverFetch('/api/documents.search', {
 			method: 'POST',
 			body: {
 				offset,
 				limit,
 				query,
+					statusFilter,
+					dateFilter,
+					documentId,
 			},
 		})
 		return {
@@ -62,17 +68,13 @@ server.tool("search",
 server.tool("read",
 	{
 		ids: z.array(z.string().describe("document id")),
-		statusFilter: z.enum(["archived", "draft", "published"]).describe("document status filter"),
-		dateFilter: z.enum(["day", "week", "month", "year"]).describe("document date filter"),
 	},
-	async ({ ids, statusFilter, dateFilter }) => {
+	async ({ ids }) => {
 		const docs = await Promise.all(ids.map(async id => {
 			const {data} = await serverFetch('/api/documents.info', {
 				method: 'POST',
 				body: {
 					id,
-					statusFilter,
-					dateFilter,
 				},
 			})
 			return data
