@@ -62,13 +62,17 @@ server.tool("search",
 server.tool("read",
 	{
 		ids: z.array(z.string().describe("document id")),
+		statusFilter: z.enum(["archived", "draft", "published"]).describe("document status filter"),
+		dateFilter: z.enum(["day", "week", "month", "year"]).describe("document date filter"),
 	},
-	async ({ ids }) => {
+	async ({ ids, statusFilter, dateFilter }) => {
 		const docs = await Promise.all(ids.map(async id => {
 			const {data} = await serverFetch('/api/documents.info', {
 				method: 'POST',
 				body: {
 					id,
+					statusFilter,
+					dateFilter,
 				},
 			})
 			return data
