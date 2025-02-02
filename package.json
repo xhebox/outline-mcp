@@ -1,6 +1,6 @@
 {
 	"name": "outline-mcp",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Model Context Protocol server for outline",
 	"author": "xhebox (xw897002528@gmail.com)",
 	"type": "module",
